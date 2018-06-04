@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd ">
+
+    <bean
+            id="HelloWorldServiceImpl" class="com.alibaba.service.impl.HelloServiceImpl"/>
+    <bean
+            id="HelloWorldService" class="com.taobao.hsf.app.spring.util.HSFSpringProviderBean" init-method="init">
+        <property name="serviceInterface" value="com.alibaba.service.HelloWorldService"/>
+        <property name="target" ref="HelloWorldServiceImpl"/>
+        <property name="serviceVersion" value="1.0.0.daily"/>
+        <!-- 组别一致的服务才可以互相调用 -->
+        <property name="serviceGroup" value="HSF"/>
+        <!--仅仅便于管理-->
+        <property name="serviceName" value="HelloWorld"/>
+    </bean>
+    <bean
+            id="HelloWorldConsumer" class="com.taobao.hsf.app.spring.util.HSFSpringConsumerBean" init-method="init">
+        <property name="interfaceName" value="com.alibaba.service.HelloWorldService"/>
+        <property name="version" value="1.0.0.daily"/>
+        <!--&lt;!&ndash;异步方法调用&ndash;&gt;-->
+        <!--<property name="asyncallMethods">-->
+            <!--<list>-->
+                <!--&lt;!&ndash;future 的含义为通过 Future 的方式去获取请求执行的结果,例如先调用下远程的接-->
+<!--口,接着继续做别的事情,然后再通过 Future 来获取结果&ndash;&gt;-->
+                <!--<value>name:sayHello;type:future</value>-->
+            <!--</list>-->
+        <!--</property>-->
+        <property name="asyncallMethods">
+            <list>
+                <value>name:sayHello;type:callback;listener:com.alibaba.service.MyCallBackListener</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>
